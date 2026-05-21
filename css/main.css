@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Neutral Dark Theme - Pure Charcoal & Grays (No Blue Hues!) */
+  --bg-main: #080809;
+  --bg-card: #121214;
+  --bg-card-hover: #1C1C20;
+  --border-color: #242429;
+  
+  --text-main: #F2F2F7;
+  --text-muted: #8E8E93;
+  
+  --accent-primary: #C084FC; /* Pastel Violet */
+  --accent-primary-hover: #A78BFA;
+  
+  --accent-blue: #93C5FD;    /* Soft Pastel Blue */
+  --accent-green: #86EFAC;   /* Soft Pastel Green */
+  --accent-red: #FCA5A5;     /* Soft Pastel Red */
+  --accent-purple: #D8B4FE;  /* Soft Pastel Purple */
+  --accent-orange: #FDE68A;  /* Soft Pastel Yellow/Orange */
+  --accent-pink: #FBCFE8;    /* Soft Pastel Pink */
+
+  --success: #86EFAC;
+  --success-bg: rgba(134, 239, 172, 0.1);
+  --danger: #FCA5A5;
+  --danger-bg: rgba(252, 165, 165, 0.1);
+  --warning: #FDE68A;
+  --warning-bg: rgba(253, 230, 138, 0.1);
+
+  /* Page-specific active link background highlights - Dark Mode */
+  --active-blue-bg: rgba(147, 197, 253, 0.08);
+  --active-green-bg: rgba(134, 239, 172, 0.08);
+  --active-red-bg: rgba(252, 165, 165, 0.08);
+  --active-purple-bg: rgba(216, 180, 254, 0.08);
+  --active-orange-bg: rgba(253, 230, 138, 0.08);
+  --active-pink-bg: rgba(251, 207, 232, 0.08);
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.7);
+  --shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 12px rgba(255, 255, 255, 0.03);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 4px 12px rgba(0, 0, 0, 0.5);
+  
+  --radius: 14px;
+  
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="light"] {
+  /* Minimalist Light Theme - Dusty Pastels for readability */
+  --bg-main: #F4F4F6;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F8F8FA;
+  --border-color: #E5E5EA;
+  
+  --text-main: #1C1C1E;
+  --text-muted: #8E8E93;
+  
+  --accent-primary: #A78BFA; /* Soft Pastel Purple */
+  --accent-primary-hover: #8B5CF6;
+  
+  --accent-blue: #4A7BB0;    /* Dusty Pastel Blue */
+  --accent-green: #4E9A74;   /* Dusty Pastel Green */
+  --accent-red: #D27D7D;     /* Dusty Pastel Red */
+  --accent-purple: #8B6EB8;  /* Dusty Pastel Purple */
+  --accent-orange: #C6902B;  /* Dusty Pastel Amber/Orange */
+  --accent-pink: #D47FA6;    /* Dusty Pastel Pink */
+
+  --success: #4E9A74;
+  --success-bg: rgba(78, 154, 116, 0.1);
+  --danger: #D27D7D;
+  --danger-bg: rgba(210, 125, 125, 0.1);
+  --warning: #C6902B;
+  --warning-bg: rgba(198, 144, 43, 0.1);
+
+  /* Page-specific active link background highlights - Light Mode */
+  --active-blue-bg: rgba(74, 123, 176, 0.08);
+  --active-green-bg: rgba(78, 154, 116, 0.08);
+  --active-red-bg: rgba(210, 125, 125, 0.08);
+  --active-purple-bg: rgba(139, 110, 184, 0.08);
+  --active-orange-bg: rgba(198, 144, 43, 0.08);
+  --active-pink-bg: rgba(212, 127, 166, 0.08);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.1);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Card Utility */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius);
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  gap: 8px;
+}
+
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-card-hover);
+}
+
+/* Layout Utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-1 { gap: 4px; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 16px; }
+.gap-4 { gap: 24px; }
+
+/* Forms */
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-main);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-control:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.form-control:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Typography Utilities */
+.text-sm { font-size: 0.875rem; }
+.text-xs { font-size: 0.75rem; }
+.text-muted { color: var(--text-muted); }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+.animate-float { animation: float 6s ease-in-out infinite; }
+

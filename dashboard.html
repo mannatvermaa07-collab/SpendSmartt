@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - SpendSmart</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 16c-3.3 0-5-2.2-5-4s1.7-4 5-4 4 2 6 4-2.7 4-6 4zm10-8c3.3 0 5 2.2 5 4s-1.7 4-5 4-4-2-6-4 2.7-4 6-4z"/>
+        </svg>
+        <span>SpendSmart</span>
+      </a>
+      
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item active" title="Dashboard">
+          <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+        </a>
+        <a href="analytics.html" class="nav-item" title="Analytics">
+          <i class="fa-solid fa-chart-pie"></i> <span>Analytics</span>
+        </a>
+        <a href="calendar.html" class="nav-item" title="Calendar">
+          <i class="fa-solid fa-calendar"></i> <span>Calendar</span>
+        </a>
+        <a href="goals.html" class="nav-item" title="Savings Goals">
+          <i class="fa-solid fa-bullseye"></i> <span>Savings Goals</span>
+        </a>
+        <a href="settings.html" class="nav-item" title="Settings">
+          <i class="fa-solid fa-gear"></i> <span>Settings</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-bottom">
+        <a href="#" onclick="handleLogout(event)" class="nav-item text-muted hover-danger" title="Logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle-btn" onclick="window.App.toggleSidebarCollapse()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <div>
+            <h2 id="greeting">Overview</h2>
+            <p id="current-date" class="text-muted text-sm">Loading...</p>
+          </div>
+        </div>
+        
+        <div class="topbar-right">
+          <button class="theme-toggle-btn" onclick="window.App.toggleTheme()" title="Toggle Theme">
+            <i class="fa-solid fa-sun"></i>
+          </button>
+          <button class="btn btn-primary" onclick="openExpenseModal()">
+            <i class="fa-solid fa-plus"></i> <span class="hide-mobile">Add Transaction</span>
+          </button>
+          <div class="user-profile">
+            <div class="avatar">JD</div>
+            <span class="font-medium text-sm hide-mobile">John Doe</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="content-wrapper">
+        <!-- Dashboard Stats -->
+        <div class="dashboard-grid animate-fade-in" style="margin-bottom: 24px;">
+          
+          <div class="card stat-card card-blue">
+            <div class="stat-header">
+              <span>Total Balance 🏦</span>
+              <div class="stat-icon-bg"><i class="fa-solid fa-building-columns"></i></div>
+            </div>
+            <div class="stat-value" id="stat-balance">$0.00</div>
+            <div class="stat-footer trend-up">
+              <i class="fa-solid fa-arrow-up"></i> <span>Calculated based on limit</span>
+            </div>
+          </div>
+          
+          <div class="card stat-card card-red">
+            <div class="stat-header">
+              <span>Monthly Spending 💳</span>
+              <div class="stat-icon-bg"><i class="fa-solid fa-credit-card"></i></div>
+            </div>
+            <div class="stat-value" id="stat-spent">$0.00</div>
+            <div class="stat-footer" id="stat-spent-footer">
+              <span id="stat-spent-percent">0%</span> <span>of budget used</span>
+            </div>
+          </div>
+          
+          <div class="card stat-card card-green">
+            <div class="stat-header">
+              <span>Remaining Budget 🐷</span>
+              <div class="stat-icon-bg"><i class="fa-solid fa-piggy-bank"></i></div>
+            </div>
+            <div class="stat-value" id="stat-remaining">$0.00</div>
+            <div class="stat-footer">
+              <span>Limit: </span><span id="stat-budget-limit" class="font-medium" style="margin-left: 4px;">$0.00</span>
+            </div>
+          </div>
+          
+          <div class="card stat-card card-purple">
+            <div class="stat-header">
+              <span>Financial Health 🩺</span>
+              <div class="stat-icon-bg"><i class="fa-solid fa-heart-pulse"></i></div>
+            </div>
+            <div class="stat-value" id="stat-health">--/100</div>
+            <div class="stat-footer" id="stat-health-status" style="color: var(--accent-purple); font-weight: 500;">
+              Pending analysis
+            </div>
+          </div>
+
+        </div>
+
+        <!-- High Density Grid (Rebalanced) -->
+        <div class="main-grid animate-slide-up" style="animation-delay: 0.1s; grid-template-columns: 1fr 1fr;">
+          
+          <!-- Left Column -->
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            
+            <!-- Smart Insights Panel -->
+            <div class="card section-card" style="background: linear-gradient(145deg, var(--bg-card), var(--bg-main)); border: 1px solid var(--border-color);">
+              <div class="section-header" style="border: none; padding-bottom: 0;">
+                <h3 style="display: flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-lightbulb text-warning"></i> Smart Insights 💡
+                </h3>
+              </div>
+              <div style="padding-top: 12px;" id="smart-insights-container">
+                <!-- Generated by JS -->
+                <p class="text-muted text-sm">Loading insights...</p>
+              </div>
+            </div>
+            
+
+
+            <!-- Transactions -->
+            <div class="card section-card">
+              <div class="section-header">
+                <h3>Recent Transactions 💸</h3>
+                <div class="flex gap-2">
+                  <input type="text" id="search-expense" class="form-control" placeholder="Search..." style="padding: 6px 12px; width: 160px; font-size: 0.875rem;">
+                </div>
+              </div>
+              <div class="expense-list" id="expense-list" style="max-height: 400px; overflow-y: auto;">
+                <p style="text-align: center; color: var(--text-muted); padding: 40px 20px;">No transactions found.</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column -->
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+              <!-- Budget Utilization Ring -->
+              <div class="card section-card" style="padding: 16px; display: flex; flex-direction: column; align-items: center;">
+                 <h3 style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; width: 100%;">Budget Utilization 📊</h3>
+                 <div style="position: relative; width: 100px; height: 100px; margin: auto;">
+                   <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+                     <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--bg-main)" stroke-width="3" />
+                     <path id="budget-ring" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent-red)" stroke-width="3" stroke-dasharray="0, 100" style="transition: stroke-dasharray 1s ease-out;" />
+                   </svg>
+                   <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; color: var(--text-main);" id="budget-ring-text">0%</div>
+                 </div>
+              </div>
+
+              <!-- Daily Average -->
+              <div class="card section-card" style="padding: 16px;">
+                <h3 style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">Daily Average (This Month) 📅</h3>
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-top: 20px;" id="daily-avg">$0.00</div>
+                <div style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 4px;" id="daily-avg-sub">Based on 0 days</div>
+              </div>
+            </div>
+
+            <!-- Custom Upcoming Reminders -->
+            <div class="card section-card animate-fade-in" style="flex: 1; animation-delay: 0.3s">
+              <div class="section-header">
+                <h3>Upcoming Reminders 🔔</h3>
+                <button class="btn btn-secondary text-xs" onclick="openReminderModal()" style="padding: 6px 12px;">
+                  <i class="fa-solid fa-plus"></i> Add
+                </button>
+              </div>
+              <div id="reminders-list" style="display: flex; flex-direction: column; gap: 12px; max-height: 450px; overflow-y: auto;">
+                <p style="text-align: center; color: var(--text-muted); padding: 40px 20px;">No upcoming reminders.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Floating AI Assistant -->
+  <button class="ai-fab" id="ai-fab" onclick="toggleAIPanel()">
+    <i class="fa-solid fa-robot"></i>
+  </button>
+
+  <div class="ai-panel" id="ai-panel">
+    <div class="ai-panel-header">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center;">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div>
+          <div style="font-weight: 600; font-size: 0.95rem;">SpendSmart AI</div>
+          <div style="font-size: 0.75rem; color: var(--success);">Online</div>
+        </div>
+      </div>
+      <button class="btn-icon" onclick="toggleAIPanel()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="ai-panel-messages" id="chat-messages">
+      <div style="display: flex; gap: 12px; max-width: 85%;">
+        <div style="width: 28px; height: 28px; border-radius: 6px; background: var(--bg-main); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 0.75rem;"><i class="fa-solid fa-robot"></i></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <div style="padding: 10px 14px; background: linear-gradient(135deg, var(--bg-main) 0%, rgba(99, 102, 241, 0.05) 100%); border: 1px solid var(--border-color); border-radius: 12px; border-top-left-radius: 4px; font-size: 0.875rem; line-height: 1.5; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            Hello! I am your AI assistant. How can I help you analyze your spending today?
+          </div>
+          <span style="font-size: 0.65rem; color: var(--text-muted); align-self: flex-start;">Just now</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="ai-panel-input">
+      <div style="display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px;">
+        <div class="suggestion-chip" onclick="sendSuggestion('Budget summary')" style="font-size: 0.75rem; padding: 4px 8px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; white-space: nowrap;">Budget summary</div>
+        <div class="suggestion-chip" onclick="sendSuggestion('Top expense?')" style="font-size: 0.75rem; padding: 4px 8px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; white-space: nowrap;">Top expense?</div>
+      </div>
+      <form id="chat-form" style="display: flex; gap: 8px;">
+        <input type="text" id="chat-input" class="form-control" placeholder="Ask anything..." style="padding: 8px 12px;" autocomplete="off">
+        <button type="submit" class="btn btn-primary" style="padding: 8px 16px;"><i class="fa-solid fa-paper-plane"></i></button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Expense Modal -->
+  <div class="modal-overlay" id="expense-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Add Transaction</h3>
+        <button class="modal-close" onclick="closeExpenseModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="expense-form">
+        <input type="hidden" id="expense-id">
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" id="expense-amount" class="form-control" placeholder="0.00" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input type="text" id="expense-desc" class="form-control" placeholder="E.g., Morning Coffee" required>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="expense-category" class="form-control" required>
+            <option value="food">Food & Dining</option>
+            <option value="transport">Transport</option>
+            <option value="shopping">Shopping</option>
+            <option value="bills">Bills & Utilities</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="expense-date" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px; justify-content: center;">Save Transaction</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Reminder Modal -->
+  <div class="modal-overlay" id="reminder-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="reminder-modal-title">Add Recurring Payment</h3>
+        <button class="modal-close" onclick="closeReminderModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="reminder-form">
+        <input type="hidden" id="reminder-id">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="reminder-title" class="form-control" placeholder="E.g., Netflix Subscription" required>
+        </div>
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" id="reminder-amount" class="form-control" placeholder="0.00" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label>Repeat Frequency</label>
+          <select id="reminder-frequency" class="form-control" required>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+            <option value="once">Once</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Start Date / Next Due</label>
+          <input type="date" id="reminder-start-date" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>End Date (Optional)</label>
+          <input type="date" id="reminder-end-date" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px; justify-content: center;">Save Reminder</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <style>
+    @media (max-width: 640px) {
+      .hide-mobile { display: none; }
+    }
+  </style>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/expense.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/ai.js"></script>
+</body>
+</html>

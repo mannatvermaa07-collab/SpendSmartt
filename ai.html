@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chatbot - SpendSmart</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <style>
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 160px);
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+    
+    .chat-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg-main);
+    }
+
+    .ai-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: white;
+    }
+    
+    .chat-messages {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 80%;
+    }
+    
+    .message.ai {
+      align-self: flex-start;
+    }
+    
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+    
+    .message-bubble {
+      padding: 14px 18px;
+      border-radius: 12px;
+      line-height: 1.5;
+      font-size: 0.875rem;
+    }
+    
+    .message.ai .message-bubble {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-top-left-radius: 4px;
+    }
+    
+    .message.user .message-bubble {
+      background: var(--accent-primary);
+      color: white;
+      border-top-right-radius: 4px;
+    }
+    
+    .chat-input-area {
+      padding: 20px 24px;
+      background: var(--bg-main);
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .input-wrapper {
+      display: flex;
+      gap: 12px;
+      background: var(--bg-card);
+      padding: 6px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+    }
+    
+    .chat-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 8px 12px;
+      color: var(--text-main);
+      font-size: 0.875rem;
+      outline: none;
+    }
+    
+    .btn-send {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: var(--accent-primary);
+      border: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-send:hover {
+      background: var(--accent-primary-hover);
+    }
+    
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 8px 12px;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      width: fit-content;
+      display: none;
+    }
+    
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+    
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+    
+    .suggestions {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .suggestion-chip {
+      padding: 6px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .suggestion-chip:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 16c-3.3 0-5-2.2-5-4s1.7-4 5-4 4 2 6 4-2.7 4-6 4zm10-8c3.3 0 5 2.2 5 4s-1.7 4-5 4-4-2-6-4 2.7-4 6-4z"/>
+        </svg>
+      </a>
+      
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item">
+          <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+        </a>
+        <a href="analytics.html" class="nav-item">
+          <i class="fa-solid fa-chart-pie"></i> <span>Analytics</span>
+        </a>
+        <a href="calendar.html" class="nav-item">
+          <i class="fa-solid fa-calendar"></i> <span>Calendar</span>
+        </a>
+        <a href="goals.html" class="nav-item">
+          <i class="fa-solid fa-bullseye"></i> <span>Savings Goals</span>
+        </a>
+        <a href="ai.html" class="nav-item active">
+          <i class="fa-solid fa-robot"></i> <span>AI Chatbot</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i class="fa-solid fa-gear"></i> <span>Settings</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-bottom">
+        <a href="login.html" class="nav-item text-muted hover-danger">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" onclick="window.App.toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div>
+            <h2>AI Chatbot</h2>
+            <p class="text-muted text-sm">Financial analysis assistant</p>
+          </div>
+        </div>
+        
+        <div class="topbar-right">
+          <button class="theme-toggle-btn" onclick="window.App.toggleTheme()" title="Toggle Theme">
+            <i class="fa-solid fa-sun"></i>
+          </button>
+          <div class="user-profile">
+            <div class="avatar">JD</div>
+            <span class="font-medium text-sm hide-mobile">John Doe</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="content-wrapper">
+        <div class="chat-container animate-fade-in">
+          
+          <div class="chat-header">
+            <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+            <div>
+              <h3 style="font-weight: 600; font-size: 1rem;">SpendSmart Assistant</h3>
+              <p style="font-size: 0.75rem; color: var(--success); display: flex; align-items: center; gap: 4px;">
+                <span style="display: inline-block; width: 6px; height: 6px; background: var(--success); border-radius: 50%;"></span>
+                Online
+              </p>
+            </div>
+          </div>
+          
+          <div class="chat-messages" id="chat-messages">
+            <!-- Initial Message -->
+            <div class="message ai">
+              <div class="ai-avatar" style="width: 32px; height: 32px; font-size: 0.875rem; border-radius: 6px;"><i class="fa-solid fa-robot"></i></div>
+              <div class="message-bubble">
+                Hello. I am the SpendSmart AI Assistant. How can I assist you with your financial analysis today?
+              </div>
+            </div>
+          </div>
+          
+          <div class="typing-indicator" id="typing-indicator" style="margin-left: 68px; margin-bottom: 20px;">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          
+          <div class="chat-input-area">
+            <div class="suggestions">
+              <div class="suggestion-chip" onclick="sendSuggestion('Provide a summary of my budget.')">Provide a summary of my budget.</div>
+              <div class="suggestion-chip" onclick="sendSuggestion('Identify my highest expense category.')">Identify my highest expense category.</div>
+              <div class="suggestion-chip" onclick="sendSuggestion('What are some effective saving strategies?')">What are some effective saving strategies?</div>
+            </div>
+            
+            <form id="chat-form" class="input-wrapper">
+              <input type="text" id="chat-input" class="chat-input" placeholder="Type your request here..." autocomplete="off">
+              <button type="submit" class="btn-send"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+          </div>
+          
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <style>
+    @media (max-width: 640px) {
+      .hide-mobile { display: none; }
+    }
+  </style>
+
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/ai.js"></script>
+</body>
+</html>

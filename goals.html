@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Savings Goals - SpendSmart</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .goal-card {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .goal-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+    
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    
+    .goal-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--accent-green);
+    }
+    
+    .goal-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    /* Circular Progress SVG */
+    .goal-ring-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+    }
+    
+    .ring-wrapper {
+      position: relative;
+      width: 72px;
+      height: 72px;
+    }
+    
+    .ring-svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+    
+    .ring-bg {
+      fill: none;
+      stroke: var(--bg-main);
+      stroke-width: 4;
+    }
+    
+    .ring-progress {
+      fill: none;
+      stroke: var(--accent-green);
+      stroke-width: 4;
+      stroke-linecap: round;
+      transition: stroke-dasharray 1s ease-out;
+    }
+    
+    .ring-text {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    
+    .goal-details {
+      flex: 1;
+      padding-left: 16px;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: var(--bg-main);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      border: 1px solid var(--border-color);
+    }
+    
+    .badge.completed {
+      background: var(--success-bg);
+      color: var(--success);
+      border-color: transparent;
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <a href="index.html" class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 16c-3.3 0-5-2.2-5-4s1.7-4 5-4 4 2 6 4-2.7 4-6 4zm10-8c3.3 0 5 2.2 5 4s-1.7 4-5 4-4-2-6-4 2.7-4 6-4z"/>
+        </svg>
+        <span>SpendSmart</span>
+      </a>
+      
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item">
+          <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+        </a>
+        <a href="analytics.html" class="nav-item">
+          <i class="fa-solid fa-chart-pie"></i> <span>Analytics</span>
+        </a>
+        <a href="calendar.html" class="nav-item">
+          <i class="fa-solid fa-calendar"></i> <span>Calendar</span>
+        </a>
+        <a href="goals.html" class="nav-item active">
+          <i class="fa-solid fa-bullseye"></i> <span>Savings Goals</span>
+        </a>
+
+        <a href="settings.html" class="nav-item">
+          <i class="fa-solid fa-gear"></i> <span>Settings</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-bottom">
+        <a href="#" onclick="handleLogout(event)" class="nav-item text-muted hover-danger">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle-btn" onclick="window.App.toggleSidebarCollapse()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <div>
+            <h2>Savings Goals 🎯</h2>
+            <p class="text-muted text-sm">Track milestones and completion rates</p>
+          </div>
+        </div>
+        
+        <div class="topbar-right">
+          <button class="theme-toggle-btn" onclick="window.App.toggleTheme()" title="Toggle Theme">
+            <i class="fa-solid fa-sun"></i>
+          </button>
+          <button class="btn btn-primary" onclick="openGoalModal()">
+            <i class="fa-solid fa-plus"></i> <span class="hide-mobile">New Goal</span>
+          </button>
+          <div class="user-profile">
+            <div class="avatar">JD</div>
+            <span class="font-medium text-sm hide-mobile">John Doe</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="content-wrapper">
+        <div class="dashboard-grid animate-slide-up" id="goals-container" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Floating AI Assistant -->
+  <button class="ai-fab" id="ai-fab" onclick="toggleAIPanel()">
+    <i class="fa-solid fa-robot"></i>
+  </button>
+
+  <div class="ai-panel" id="ai-panel">
+    <div class="ai-panel-header">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--accent-primary); color: white; display: flex; align-items: center; justify-content: center;">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div>
+          <div style="font-weight: 600; font-size: 0.95rem;">SpendSmart AI</div>
+          <div style="font-size: 0.75rem; color: var(--success);">Online</div>
+        </div>
+      </div>
+      <button class="btn-icon" onclick="toggleAIPanel()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="ai-panel-messages" id="chat-messages">
+      <div style="display: flex; gap: 12px; max-width: 85%;">
+        <div style="width: 28px; height: 28px; border-radius: 6px; background: var(--bg-main); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 0.75rem;"><i class="fa-solid fa-robot"></i></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <div style="padding: 10px 14px; background: linear-gradient(135deg, var(--bg-main) 0%, rgba(99, 102, 241, 0.05) 100%); border: 1px solid var(--border-color); border-radius: 12px; border-top-left-radius: 4px; font-size: 0.875rem; line-height: 1.5; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            Hello! I am your AI assistant. How can I help you analyze your spending today?
+          </div>
+          <span style="font-size: 0.65rem; color: var(--text-muted); align-self: flex-start;">Just now</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="ai-panel-input">
+      <div style="display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px;">
+        <div class="suggestion-chip" onclick="sendSuggestion('Budget summary')" style="font-size: 0.75rem; padding: 4px 8px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; white-space: nowrap;">Budget summary</div>
+        <div class="suggestion-chip" onclick="sendSuggestion('Top expense?')" style="font-size: 0.75rem; padding: 4px 8px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; white-space: nowrap;">Top expense?</div>
+      </div>
+      <form id="chat-form" style="display: flex; gap: 8px;">
+        <input type="text" id="chat-input" class="form-control" placeholder="Ask anything..." style="padding: 8px 12px;" autocomplete="off">
+        <button type="submit" class="btn btn-primary" style="padding: 8px 16px;"><i class="fa-solid fa-paper-plane"></i></button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Goal Modal -->
+  <div class="modal-overlay" id="goal-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Create Goal 🎯</h3>
+        <button class="modal-close" onclick="closeGoalModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="goal-form">
+        <div class="form-group">
+          <label>Goal Name</label>
+          <input type="text" id="goal-name" class="form-control" placeholder="E.g., Emergency Fund" required>
+        </div>
+        <div class="form-group">
+          <label>Target Amount</label>
+          <input type="number" id="goal-target" class="form-control" placeholder="0.00" step="0.01" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px; justify-content: center;">Create</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Funds Modal -->
+  <div class="modal-overlay" id="fund-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Funds</h3>
+        <button class="modal-close" onclick="closeFundModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="fund-form">
+        <input type="hidden" id="fund-goal-id">
+        <div class="form-group">
+          <label>Amount to Add</label>
+          <input type="number" id="fund-amount" class="form-control" placeholder="0.00" step="0.01" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px; justify-content: center;">Add Funds</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/goals.js"></script>
+  <script src="js/ai.js"></script>
+</body>
+</html>

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In – SpendSmart</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-color: #0c0f16;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Premium Liquid Glass Background Blobs */
+    .liquid-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.55;
+      mix-blend-mode: screen;
+      animation: float-blob 22s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+      top: 10%;
+      left: 15%;
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(129, 140, 248, 0.45) 0%, rgba(99, 102, 241, 0.05) 100%);
+      animation-duration: 24s;
+    }
+
+    .blob-2 {
+      bottom: 12%;
+      right: 12%;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(167, 139, 250, 0.4) 0%, rgba(139, 92, 246, 0.05) 100%);
+      animation-duration: 28s;
+      animation-delay: -6s;
+    }
+
+    .blob-3 {
+      top: 40%;
+      left: 45%;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(96, 165, 250, 0.35) 0%, rgba(59, 130, 246, 0.05) 100%);
+      animation-duration: 20s;
+      animation-delay: -12s;
+    }
+
+    @keyframes float-blob {
+      0% {
+        transform: translate(0px, 0px) scale(1);
+      }
+      50% {
+        transform: translate(60px, -50px) scale(1.15);
+      }
+      100% {
+        transform: translate(-40px, 50px) scale(0.9);
+      }
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(26, 31, 43, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 44px 40px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.45), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+      animation: fadeIn 0.4s ease forwards;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Logo */
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+      margin-bottom: 32px;
+    }
+    .auth-logo span {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    /* Header */
+    .auth-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .auth-header h2 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+      margin-bottom: 6px;
+    }
+    .auth-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Error Banner */
+    .auth-error {
+      display: none;
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.84rem;
+      color: var(--danger);
+      margin-bottom: 18px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* Success Banner */
+    .auth-success {
+      display: none;
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.84rem;
+      color: var(--success);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    /* Google Button */
+    .btn-google {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 11px 16px;
+      background: var(--bg-main);
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 10px;
+    }
+    .btn-google:hover:not(:disabled) {
+      border-color: var(--accent-primary);
+      background: rgba(129, 140, 248, 0.05);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(129, 140, 248, 0.2);
+    }
+    .btn-google:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+    .google-logo { width: 20px; height: 20px; flex-shrink: 0; }
+
+    /* Apple Button */
+    .btn-apple {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 11px 16px;
+      background: #000000;
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 14px;
+    }
+    .btn-apple:hover:not(:disabled) {
+      border-color: rgba(255, 255, 255, 0.35);
+      background: #0d0f14;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(255, 255, 255, 0.08);
+    }
+    .btn-apple:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+    /* Divider */
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      margin: 18px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+
+    /* Form */
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block;
+      font-size: 0.83rem;
+      font-weight: 500;
+      color: var(--text-main);
+      margin-bottom: 5px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px 13px;
+      background: var(--bg-main);
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-control:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+    }
+
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      padding: 11px;
+      margin-top: 6px;
+      font-size: 0.93rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-purple) 100%);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(129, 140, 248, 0.3);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(129, 140, 248, 0.42);
+    }
+    .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+    /* Row options */
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0 4px;
+      font-size: 0.83rem;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .link-primary {
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .link-primary:hover { text-decoration: underline; }
+
+    /* Toggle */
+    .auth-toggle {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+    .auth-toggle .link-primary { font-size: 0.86rem; }
+
+    /* Hidden state */
+    #signup-view { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="liquid-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div class="auth-card">
+
+    <!-- ── Logo ── -->
+    <a href="index.html" class="auth-logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 16c-3.3 0-5-2.2-5-4s1.7-4 5-4 4 2 6 4-2.7 4-6 4zm10-8c3.3 0 5 2.2 5 4s-1.7 4-5 4-4-2-6-4 2.7-4 6-4z"/>
+      </svg>
+      <span>SpendSmart</span>
+    </a>
+
+    <!-- ── Alerts ── -->
+    <div class="auth-error" id="auth-error"></div>
+    <div class="auth-success" id="auth-success"></div>
+
+    <!-- ══════════ LOGIN VIEW ══════════ -->
+    <div id="login-view">
+      <div class="auth-header">
+        <h2>Welcome back</h2>
+        <p>Sign in to your SpendSmart account</p>
+      </div>
+
+      <!-- Google -->
+      <button class="btn-google" id="btn-google-login" onclick="handleGoogleSignIn()">
+        <i class="fa-brands fa-google" style="color: #4285F4; font-size: 1.1rem; margin-right: 8px;"></i>
+        Continue with Google
+      </button>
+
+      <!-- Apple -->
+      <button class="btn-apple" id="btn-apple-login" onclick="handleAppleSignIn()">
+        <i class="fa-brands fa-apple" style="color: #ffffff; font-size: 1.1rem; margin-right: 8px;"></i>
+        Continue with Apple
+      </button>
+
+      <div class="auth-divider">or continue with email</div>
+
+      <form id="login-form" onsubmit="handleEmailLogin(event)" novalidate>
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <div class="form-row">
+          <label class="checkbox-label"><input type="checkbox"> Remember me</label>
+          <a class="link-primary" onclick="handleForgotPassword()">Forgot password?</a>
+        </div>
+        <button type="submit" id="btn-login" class="btn-submit">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+        </button>
+      </form>
+
+      <div class="auth-toggle">
+        Don't have an account? <a class="link-primary" onclick="showView('signup')">Create account</a>
+      </div>
+    </div>
+
+    <!-- ══════════ SIGNUP VIEW ══════════ -->
+    <div id="signup-view">
+      <div class="auth-header">
+        <h2>Create account</h2>
+        <p>Start your financial journey with SpendSmart</p>
+      </div>
+
+      <!-- Google -->
+      <button class="btn-google" id="btn-google-signup" onclick="handleGoogleSignIn()">
+        <i class="fa-brands fa-google" style="color: #4285F4; font-size: 1.1rem; margin-right: 8px;"></i>
+        Sign up with Google
+      </button>
+
+      <!-- Apple -->
+      <button class="btn-apple" id="btn-apple-signup" onclick="handleAppleSignIn()">
+        <i class="fa-brands fa-apple" style="color: #ffffff; font-size: 1.1rem; margin-right: 8px;"></i>
+        Sign up with Apple
+      </button>
+
+      <div class="auth-divider">or sign up with email</div>
+
+      <form id="signup-form" onsubmit="handleEmailSignup(event)" novalidate>
+        <div class="form-group">
+          <label for="signup-name">Full Name</label>
+          <input type="text" id="signup-name" class="form-control" placeholder="Jane Doe" required autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label for="signup-email">Email Address</label>
+          <input type="email" id="signup-email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" class="form-control" placeholder="At least 6 characters" required autocomplete="new-password" minlength="6">
+        </div>
+        <button type="submit" id="btn-signup" class="btn-submit">
+          <i class="fa-solid fa-user-plus"></i> Create Account
+        </button>
+      </form>
+
+      <div class="auth-toggle">
+        Already have an account? <a class="link-primary" onclick="showView('login')">Sign in</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Local Authentication Mock -->
+  <script src="js/firebase.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // ── UI Helpers ────────────────────────────────────────────
+    function showView(view) {
+      clearAlerts();
+      document.getElementById('login-view').style.display  = view === 'login'  ? 'block' : 'none';
+      document.getElementById('signup-view').style.display = view === 'signup' ? 'block' : 'none';
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('auth-error');
+      el.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="margin-right:6px;"></i>' + msg;
+      el.style.display = 'block';
+    }
+
+    function showSuccess(msg) {
+      const el = document.getElementById('auth-success');
+      el.innerHTML = '<i class="fa-solid fa-circle-check" style="margin-right:6px;"></i>' + msg;
+      el.style.display = 'block';
+    }
+
+    function clearAlerts() {
+      document.getElementById('auth-error').style.display   = 'none';
+      document.getElementById('auth-success').style.display = 'none';
+    }
+
+    function setBtn(id, loading, originalHTML) {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.disabled  = loading;
+      btn.innerHTML = loading
+        ? '<i class="fa-solid fa-spinner fa-spin"></i> Please wait…'
+        : originalHTML;
+    }
+
+    // ── Error Code → Human Message ────────────────────────────
+    function friendlyError(code) {
+      const map = {
+        'auth/user-not-found':        'No account found with this email address.',
+        'auth/wrong-password':        'Incorrect password. Please try again.',
+        'auth/invalid-credential':    'Incorrect email or password. Please try again.',
+        'auth/email-already-in-use':  'An account already exists with this email — try signing in.',
+        'auth/weak-password':         'Password must be at least 6 characters.',
+        'auth/invalid-email':         'Please enter a valid email address.',
+        'auth/popup-closed-by-user':  'Sign-in popup was closed. Please try again.',
+        'auth/popup-blocked':         'Your browser blocked the sign-in popup. Please allow popups for this site.',
+        'auth/network-request-failed':'Network error — please check your internet connection.',
+        'auth/too-many-requests':     'Too many failed attempts. Please wait a moment and try again.',
+        'auth/cancelled-popup-request': 'Another sign-in is already in progress.',
+        'auth/operation-not-allowed': 'This sign-in method is not enabled. Contact support.',
+      };
+      return map[code] || `Sign-in failed (${code}). Please try again.`;
+    }
+
+    // ── Post-Auth: persist UID and route ─────────────────────
+    async function onAuthSuccess(user) {
+      clearAlerts();
+      localStorage.setItem('spendSmart_currentAccount', user.uid);
+      window.Store.init();
+
+      // Pre-fill display name from Google/Email if profile is blank
+      if (user.displayName) {
+        const stored = window.Store.getUser();
+        if (!stored || !stored.name) {
+          window.Store.updateUser({ name: user.displayName });
+        }
+      }
+
+      const dest = window.Store.isOnboardingComplete() ? 'dashboard.html' : 'onboarding.html';
+      window.location.href = dest;
+    }
+
+    // ── Google Sign-In ────────────────────────────────────────
+    async function handleGoogleSignIn() {
+      clearAlerts();
+      const btnG1 = document.getElementById('btn-google-login');
+      const btnG2 = document.getElementById('btn-google-signup');
+      const btnA1 = document.getElementById('btn-apple-login');
+      const btnA2 = document.getElementById('btn-apple-signup');
+      
+      const origG1 = btnG1 ? btnG1.innerHTML : '';
+      const origG2 = btnG2 ? btnG2.innerHTML : '';
+
+      [btnG1, btnG2, btnA1, btnA2].forEach(b => { if (b) b.disabled = true; });
+      [btnG1, btnG2].forEach(b => { if (b) b.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting…'; });
+
+      setTimeout(() => {
+        [btnG1, btnG2, btnA1, btnA2].forEach(b => { if (b) b.disabled = false; });
+        if (btnG1) btnG1.innerHTML = origG1;
+        if (btnG2) btnG2.innerHTML = origG2;
+        showError("Social authentication is disabled in this frontend-only demo. Please Sign In or Create an Account using Email.");
+      }, 800);
+    }
+
+    // ── Apple Sign-In ─────────────────────────────────────────
+    async function handleAppleSignIn() {
+      clearAlerts();
+      const btnG1 = document.getElementById('btn-google-login');
+      const btnG2 = document.getElementById('btn-google-signup');
+      const btnA1 = document.getElementById('btn-apple-login');
+      const btnA2 = document.getElementById('btn-apple-signup');
+      
+      const origA1 = btnA1 ? btnA1.innerHTML : '';
+      const origA2 = btnA2 ? btnA2.innerHTML : '';
+
+      [btnG1, btnG2, btnA1, btnA2].forEach(b => { if (b) b.disabled = true; });
+      [btnA1, btnA2].forEach(b => { if (b) b.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting…'; });
+
+      setTimeout(() => {
+        [btnG1, btnG2, btnA1, btnA2].forEach(b => { if (b) b.disabled = false; });
+        if (btnA1) btnA1.innerHTML = origA1;
+        if (btnA2) btnA2.innerHTML = origA2;
+        showError("Social authentication is disabled in this frontend-only demo. Please Sign In or Create an Account using Email.");
+      }, 800);
+    }
+
+    // ── Email Login ───────────────────────────────────────────
+    async function handleEmailLogin(e) {
+      e.preventDefault();
+      clearAlerts();
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const origHTML = document.getElementById('btn-login').innerHTML;
+
+      setBtn('btn-login', true);
+      try {
+        const user = await window.signInWithEmail(email, password);
+        await onAuthSuccess(user);
+      } catch (err) {
+        setBtn('btn-login', false, origHTML);
+        showError(friendlyError(err.code));
+      }
+    }
+
+    // ── Email Sign-Up ─────────────────────────────────────────
+    async function handleEmailSignup(e) {
+      e.preventDefault();
+      clearAlerts();
+      const name     = document.getElementById('signup-name').value.trim();
+      const email    = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const origHTML = document.getElementById('btn-signup').innerHTML;
+
+      if (!name) { showError('Please enter your full name.'); return; }
+
+      setBtn('btn-signup', true);
+      try {
+        const user = await window.signUpWithEmail(email, password);
+        // Attach display name to the Firebase profile
+        await user.updateProfile({ displayName: name });
+        await onAuthSuccess(user);
+      } catch (err) {
+        setBtn('btn-signup', false, origHTML);
+        showError(friendlyError(err.code));
+      }
+    }
+
+    // ── Password Reset ────────────────────────────────────────
+    async function handleForgotPassword() {
+      clearAlerts();
+      const email = document.getElementById('login-email').value.trim();
+      if (!email) {
+        showError('Enter your email address in the field above, then click "Forgot password?".');
+        return;
+      }
+      try {
+        await window.firebaseAuth.sendPasswordResetEmail(email);
+        showSuccess(`Password reset link sent to <strong>${email}</strong>. Check your inbox.`);
+      } catch (err) {
+        showError(friendlyError(err.code));
+      }
+    }
+
+    // ── Handle Initial View Toggling from Query Parameter ─────
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const view = params.get('view');
+      if (view === 'signup') {
+        showView('signup');
+      } else {
+        showView('login');
+      }
+    });
+  </script>
+
+</body>
+</html>
